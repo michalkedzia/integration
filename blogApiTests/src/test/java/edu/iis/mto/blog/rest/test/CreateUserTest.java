@@ -38,6 +38,7 @@ class CreateUserTest extends FunctionalTests {
                 .statusCode(HttpStatus.SC_CREATED)
                 .when()
                 .post(USER_API);
+
         given().accept(ContentType.JSON)
                 .header("Content-Type", "application/json;charset=UTF-8")
                 .body(jsonObj.toString())
@@ -47,46 +48,6 @@ class CreateUserTest extends FunctionalTests {
                 .statusCode(HttpStatus.SC_CONFLICT)
                 .when()
                 .post(USER_API);
-    }
-
-    @Test
-    void userWithCONFIRMEDStatusShouldBeAbleToAddNewPost() {
-
-    }
-
-    @Test
-    void userWithCONFIRMEDStatusShouldBeAbleToLikePost() {
-
-    }
-
-    @Test
-    void userShouldNotBeAbleToLikeYourOwnPost() {
-
-    }
-
-    @Test
-    void userShouldBeAbleToLikeYourOwnPost() {
-
-    }
-
-    @Test
-    void addLikeToPostAgainShouldNotChangePostStatus() {
-
-    }
-
-    @Test
-    void postsByUserWithTheDeletedStatusShouldNotBeSuccessful() {
-
-    }
-
-    @Test
-    void postsShouldReturnTheCorrectNumberOfLikes() {
-
-    }
-
-    @Test
-    void deletedUsersShouldNotBeReturned() {
-
     }
 
 }
