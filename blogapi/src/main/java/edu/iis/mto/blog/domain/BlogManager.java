@@ -1,6 +1,7 @@
 package edu.iis.mto.blog.domain;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -50,6 +51,9 @@ public class BlogManager extends DomainService implements BlogService {
     public boolean addLikeToPost(Long userId, Long postId) {
         User user = userRepository.findById(userId)
                                   .orElseThrow(domainError(DomainError.USER_NOT_FOUND));
+        if(!user.getAccountStatus().equals(AccountStatus.CONFIRMED)){
+            throw new DomainError("User account must be CONFIRMED, actual status : " + user.getAccountStatus());
+        }
         BlogPost post = blogPostRepository.findById(postId)
                                           .orElseThrow(domainError(DomainError.POST_NOT_FOUND));
         if (post.getUser()
