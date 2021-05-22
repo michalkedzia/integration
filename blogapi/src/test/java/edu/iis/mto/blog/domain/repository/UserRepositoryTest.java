@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ class UserRepositoryTest {
     void setUp() {
         user = new User();
         user.setFirstName("Jan");
+        user.setLastName("Doe");
         user.setEmail("john@domain.com");
         user.setAccountStatus(AccountStatus.NEW);
     }
@@ -61,6 +63,72 @@ class UserRepositoryTest {
         User persistedUser = repository.save(user);
 
         assertThat(persistedUser.getId(), notNullValue());
+    }
+
+    @Test
+    void shouldFindUserPassingArgumentsInCaseOfCaseSensitive(){
+        String firstName = "John",  lastName="Doe",  email = "john@email.com";
+        User user = userBuilder(firstName,lastName ,email);
+
+        repository.save(user);
+        List<User> userList = repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(firstName, lastName, email);
+
+        Assertions.assertEquals(1,userList.size());
+        Assertions.assertEquals(userList.get(0).getFirstName(),firstName);
+        Assertions.assertEquals(userList.get(0).getLastName(),lastName);
+        Assertions.assertEquals(userList.get(0).getEmail(),email);
+    }
+
+    @Test
+    void shouldFindUserPassingArgumentsToUpperCase(){
+        String firstName = "John",  lastName="Doe",  email = "john@email.com";
+        User user = userBuilder(firstName,lastName ,email);
+
+        repository.save(user);
+        List<User> userList = repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(firstName.toUpperCase(), lastName.toUpperCase(), email.toUpperCase());
+
+        Assertions.assertEquals(1,userList.size());
+        Assertions.assertEquals(userList.get(0).getFirstName(),firstName);
+        Assertions.assertEquals(userList.get(0).getLastName(),lastName);
+        Assertions.assertEquals(userList.get(0).getEmail(),email);
+    }
+
+    @Test
+    void shouldFindUserUsingOnlyEmail(){
+        String firstName = "John",  lastName="Doe",  email = "john@email.com";
+        User user = userBuilder(firstName,lastName ,email);
+
+        repository.save(user);
+        List<User> userList = repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("dummyValue", "dummyValue", email);
+
+        Assertions.assertEquals(1,userList.size());
+        Assertions.assertEquals(userList.get(0).getFirstName(),firstName);
+        Assertions.assertEquals(userList.get(0).getLastName(),lastName);
+        Assertions.assertEquals(userList.get(0).getEmail(),email);
+    }
+
+    @Test
+    void shouldNotFindUser(){
+        String firstName = "John",  lastName="Doe",  email = "john@email.com";
+        User user = userBuilder(firstName,lastName ,email);
+
+        repository.save(user);
+        List<User> userList = repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("dummyValue", "dummyValue","dummyValue");
+
+        Assertions.assertEquals(0,userList.size());
+    }
+
+    User userBuilder(String firstName, String lastName, String email){
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setAccountStatus(AccountStatus.NEW);
+        return user;
     }
 
 }
