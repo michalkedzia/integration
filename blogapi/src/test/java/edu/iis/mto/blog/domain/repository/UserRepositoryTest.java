@@ -29,12 +29,14 @@ class UserRepositoryTest {
 
     private User user;
 
+    private String firstName = "Jan",  lastName="Doe",  email = "john@domain.com";
+
     @BeforeEach
     void setUp() {
         user = new User();
-        user.setFirstName("Jan");
-        user.setLastName("Doe");
-        user.setEmail("john@domain.com");
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
         user.setAccountStatus(AccountStatus.NEW);
     }
 
@@ -67,9 +69,6 @@ class UserRepositoryTest {
 
     @Test
     void shouldFindUserPassingArgumentsInCaseOfCaseSensitive(){
-        String firstName = "John",  lastName="Doe",  email = "john@email.com";
-        User user = userBuilder(firstName,lastName ,email);
-
         repository.save(user);
         List<User> userList = repository
                 .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(firstName, lastName, email);
@@ -82,9 +81,6 @@ class UserRepositoryTest {
 
     @Test
     void shouldFindUserPassingArgumentsToUpperCase(){
-        String firstName = "John",  lastName="Doe",  email = "john@email.com";
-        User user = userBuilder(firstName,lastName ,email);
-
         repository.save(user);
         List<User> userList = repository
                 .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(firstName.toUpperCase(), lastName.toUpperCase(), email.toUpperCase());
@@ -97,9 +93,6 @@ class UserRepositoryTest {
 
     @Test
     void shouldFindUserUsingOnlyEmail(){
-        String firstName = "John",  lastName="Doe",  email = "john@email.com";
-        User user = userBuilder(firstName,lastName ,email);
-
         repository.save(user);
         List<User> userList = repository
                 .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("dummyValue", "dummyValue", email);
@@ -112,23 +105,11 @@ class UserRepositoryTest {
 
     @Test
     void shouldNotFindUser(){
-        String firstName = "John",  lastName="Doe",  email = "john@email.com";
-        User user = userBuilder(firstName,lastName ,email);
-
-        repository.save(user);
+        repository.save(this.user);
         List<User> userList = repository
                 .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("dummyValue", "dummyValue","dummyValue");
 
         Assertions.assertEquals(0,userList.size());
-    }
-
-    User userBuilder(String firstName, String lastName, String email){
-        User user = new User();
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setAccountStatus(AccountStatus.NEW);
-        return user;
     }
 
 }
