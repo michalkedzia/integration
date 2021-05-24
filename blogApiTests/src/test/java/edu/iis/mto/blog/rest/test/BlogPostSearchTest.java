@@ -9,9 +9,12 @@ import static io.restassured.RestAssured.given;
 
 public class BlogPostSearchTest extends FunctionalTests {
 
-    @Disabled
     @Test
     void postsByUserWithTheDeletedStatusShouldNotBeSuccessful() {
-
+        given()
+                .expect()
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .when()
+                .get("/blog/post/1");
     }
 }
